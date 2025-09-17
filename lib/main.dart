@@ -2,6 +2,7 @@
 import '''package:flutter/gestures.dart''';
 import '''package:flutter/material.dart''';
 import '''package:google_fonts/google_fonts.dart''';
+import '''./registration_screen.dart''';
 
 void main() {
   runApp(const MyApp());
@@ -122,7 +123,10 @@ class WelcomeScreen extends StatelessWidget {
                   // Get Started Button
                   ElevatedButton(
                     onPressed: () {
-                      // TODO: Implement navigation to the next screen
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const RegistrationScreen()),
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF0D8ECE),
