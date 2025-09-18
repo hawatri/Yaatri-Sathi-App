@@ -1,10 +1,10 @@
 
 import 'dart:io';
-import '''package:flutter/material.dart''';
-import '''package:google_fonts/google_fonts.dart''';
-import '''package:intl/intl.dart''';
-import '''package:file_picker/file_picker.dart''';
-import '''package:image_picker/image_picker.dart''';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:image_picker/image_picker.dart';
 
 class JourneyDetailsScreen extends StatefulWidget {
   const JourneyDetailsScreen({super.key});
@@ -16,10 +16,38 @@ class JourneyDetailsScreen extends StatefulWidget {
 class _JourneyDetailsScreenState extends State<JourneyDetailsScreen> {
   final Map<String, TextEditingController> _controllers = {};
   String? _selectedTravelMedium;
+  String? _selectedNationality;
   String? _identityProofFileName;
   String? _touristPhotoFileName;
 
   final List<String> _travelMediums = ['By Air', 'By Train', 'By Road', 'Other'];
+  final List<String> _nationalities = [
+    'Afghan', 'Albanian', 'Algerian', 'American', 'Andorran', 'Angolan', 'Antiguans', 'Argentinean', 'Armenian', 'Australian', 'Austrian', 'Azerbaijani',
+    'Bahamian', 'Bahraini', 'Bangladeshi', 'Barbadian', 'Barbudans', 'Batswana', 'Belarusian', 'Belgian', 'Belizean', 'Beninese', 'Bhutanese', 'Bolivian', 'Bosnian', 'Brazilian', 'British', 'Bruneian', 'Bulgarian', 'Burkinabe', 'Burmese', 'Burundian',
+    'Cambodian', 'Cameroonian', 'Canadian', 'Cape Verdean', 'Central African', 'Chadian', 'Chilean', 'Chinese', 'Colombian', 'Comoran', 'Congolese', 'Costa Rican', 'Croatian', 'Cuban', 'Cypriot', 'Czech',
+    'Danish', 'Djibouti', 'Dominican', 'Dutch',
+    'East Timorese', 'Ecuadorean', 'Egyptian', 'Emirian', 'Equatorial Guinean', 'Eritrean', 'Estonian', 'Ethiopian',
+    'Fijian', 'Filipino', 'Finnish', 'French',
+    'Gabonese', 'Gambian', 'Georgian', 'German', 'Ghanaian', 'Greek', 'Grenadian', 'Guatemalan', 'Guinea-Bissauan', 'Guinean', 'Guyanese',
+    'Haitian', 'Herzegovinian', 'Honduran', 'Hungarian',
+    'I-Kiribati', 'Icelandic', 'Indian', 'Indonesian', 'Iranian', 'Iraqi', 'Irish', 'Israeli', 'Italian', 'Ivorian',
+    'Jamaican', 'Japanese', 'Jordanian',
+    'Kazakhstani', 'Kenyan', 'Kittian and Nevisian', 'Kuwaiti', 'Kyrgyz',
+    'Laotian', 'Latvian', 'Lebanese', 'Liberian', 'Libyan', 'Liechtensteiner', 'Lithuanian', 'Luxembourger',
+    'Macedonian', 'Malagasy', 'Malawian', 'Malaysian', 'Maldivan', 'Malian', 'Maltese', 'Marshallese', 'Mauritanian', 'Mauritian', 'Mexican', 'Micronesian', 'Moldovan', 'Monacan', 'Mongolian', 'Moroccan', 'Mosotho', 'Motswana', 'Mozambican',
+    'Namibian', 'Nauruan', 'Nepalese', 'New Zealander', 'Nicaraguan', 'Nigerian', 'Nigerien', 'North Korean', 'Northern Irish', 'Norwegian',
+    'Omani',
+    'Pakistani', 'Palauan', 'Panamanian', 'Papua New Guinean', 'Paraguayan', 'Peruvian', 'Polish', 'Portuguese',
+    'Qatari',
+    'Romanian', 'Russian', 'Rwandan',
+    'Saint Lucian', 'Salvadoran', 'Samoan', 'San Marinese', 'Sao Tomean', 'Saudi', 'Scottish', 'Senegalese', 'Serbian', 'Seychellois', 'Sierra Leonean', 'Singaporean', 'Slovakian', 'Slovenian', 'Solomon Islander', 'Somali', 'South African', 'South Korean', 'Spanish', 'Sri Lankan', 'Sudanese', 'Surinamer', 'Swazi', 'Swedish', 'Swiss', 'Syrian',
+    'Taiwanese', 'Tajik', 'Tanzanian', 'Thai', 'Togolese', 'Tongan', 'Trinidadian or Tobagonian', 'Tunisian', 'Turkish', 'Tuvaluan',
+    'Ugandan', 'Ukrainian', 'Uruguayan', 'Uzbekistani',
+    'Venezuelan', 'Vietnamese',
+    'Welsh',
+    'Yemenite',
+    'Zambian', 'Zimbabwean'
+  ];
 
   @override
   void initState() {
@@ -50,7 +78,10 @@ class _JourneyDetailsScreenState extends State<JourneyDetailsScreen> {
   }
 
   Future<void> _pickFile(String fieldName) async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf', 'doc', 'docx', 'jpg', 'jpeg', 'png'],
+    );
 
     if (result != null) {
       File file = File(result.files.single.path!);
@@ -65,13 +96,13 @@ class _JourneyDetailsScreenState extends State<JourneyDetailsScreen> {
         setState(() {
           if (fieldName == 'Identity Proof') {
             _identityProofFileName = result.files.single.name;
-          } 
+          }
         });
       }
     }
   }
 
-    Future<void> _pickImage(String fieldName) async {
+  Future<void> _pickImage(String fieldName) async {
     final ImagePicker picker = ImagePicker();
     final XFile? image = await picker.pickImage(source: ImageSource.gallery);
 
@@ -93,7 +124,6 @@ class _JourneyDetailsScreenState extends State<JourneyDetailsScreen> {
       }
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -134,7 +164,7 @@ class _JourneyDetailsScreenState extends State<JourneyDetailsScreen> {
             _buildTextField('Enter Contact Number'),
             const SizedBox(height: 20),
             _buildSectionTitle('Travel Medium'),
-            _buildDropdownField('Select Travel Medium', _travelMediums, (newValue) {
+            _buildDropdownField('Select Travel Medium', _selectedTravelMedium, _travelMediums, (newValue) {
               setState(() {
                 _selectedTravelMedium = newValue;
               });
@@ -147,7 +177,11 @@ class _JourneyDetailsScreenState extends State<JourneyDetailsScreen> {
             _buildTextField('Enter Number'),
             const SizedBox(height: 20),
             _buildSectionTitle('Nationality'),
-            _buildDropdownField('Select Nationality', [], (value) {}), // Placeholder
+            _buildDropdownField('Select Nationality', _selectedNationality, _nationalities, (newValue) {
+              setState(() {
+                _selectedNationality = newValue;
+              });
+            }),
             const SizedBox(height: 20),
             _buildSectionTitle('KYC Information'),
             _buildTextField('Enter KYC Details'),
@@ -278,7 +312,7 @@ class _JourneyDetailsScreenState extends State<JourneyDetailsScreen> {
     );
   }
 
-  Widget _buildDropdownField(String hint, List<String> items, ValueChanged<String?> onChanged) {
+  Widget _buildDropdownField(String hint, String? value, List<String> items, ValueChanged<String?> onChanged) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
       decoration: BoxDecoration(
@@ -287,7 +321,7 @@ class _JourneyDetailsScreenState extends State<JourneyDetailsScreen> {
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
-          value: _selectedTravelMedium,
+          value: value,
           isExpanded: true,
           hint: Text(
             hint,
@@ -306,7 +340,7 @@ class _JourneyDetailsScreenState extends State<JourneyDetailsScreen> {
     );
   }
 
-    Widget _buildUploadField(String hint, String fieldName, String? fileName, VoidCallback onTap) {
+  Widget _buildUploadField(String hint, String fieldName, String? fileName, VoidCallback onTap) {
     return InkWell(
       onTap: onTap,
       child: Container(
@@ -319,10 +353,12 @@ class _JourneyDetailsScreenState extends State<JourneyDetailsScreen> {
           children: [
             const Icon(Icons.upload_file, color: Colors.grey, size: 20),
             const SizedBox(width: 10),
-            Text(
-              fileName ?? hint,
-              style: GoogleFonts.montserrat(color: fileName != null ? Colors.black : Colors.grey.shade600, fontSize: 15),
-              overflow: TextOverflow.ellipsis,
+            Expanded(
+              child: Text(
+                fileName ?? hint,
+                style: GoogleFonts.montserrat(color: fileName != null ? Colors.black : Colors.grey.shade600, fontSize: 15),
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ],
         ),
