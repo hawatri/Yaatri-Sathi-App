@@ -2,6 +2,7 @@
 import '''package:flutter/material.dart''';
 import '''package:google_fonts/google_fonts.dart''';
 import '''./journey_details_screen.dart''';
+import '''./map_screen.dart''';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -21,6 +22,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final pages = <Widget>[
+      _buildHomeContent(context),
+      const MapScreen(),
+      const Center(child: Text('Alerts coming soon')),
+      const Center(child: Text('Profile coming soon')),
+    ];
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -43,50 +50,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
         centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                _buildDashboardCard('Active Tourists', '1,234', '+12%', Colors.green),
-                _buildDashboardCard('Safe Zones', '56', '-5%', Colors.red),
-              ],
-            ),
-            const SizedBox(height: 20),
-            _buildDashboardCard('Active Incidents', '2', '+10%', Colors.green, isFullWidth: true),
-            const SizedBox(height: 40),
-            ElevatedButton.icon(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const JourneyDetailsScreen()),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF0D8ECE),
-                minimumSize: const Size(double.infinity, 60),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                elevation: 5,
-                shadowColor: Colors.black.withOpacity(0.2),
-              ),
-              icon: const Icon(Icons.add_location_alt_outlined, color: Colors.white),
-              label: Text(
-                'Create Journey',
-                style: GoogleFonts.montserrat(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+      body: pages[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -115,6 +79,52 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Widget _buildHomeContent(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Column(
+        children: [
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              _buildDashboardCard('Active Tourists', '1,234', '+12%', Colors.green),
+              _buildDashboardCard('Safe Zones', '56', '-5%', Colors.red),
+            ],
+          ),
+          const SizedBox(height: 20),
+          _buildDashboardCard('Active Incidents', '2', '+10%', Colors.green, isFullWidth: true),
+          const SizedBox(height: 40),
+          ElevatedButton.icon(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const JourneyDetailsScreen()),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF0D8ECE),
+              minimumSize: const Size(double.infinity, 60),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30),
+              ),
+              elevation: 5,
+              shadowColor: Colors.black.withOpacity(0.2),
+            ),
+            icon: const Icon(Icons.add_location_alt_outlined, color: Colors.white),
+            label: Text(
+              'Create Journey',
+              style: GoogleFonts.montserrat(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
   Widget _buildDashboardCard(String title, String value, String percentage, Color percentageColor, {bool isFullWidth = false}) {
     return Container(
       width: isFullWidth ? double.infinity : (MediaQuery.of(context).size.width / 2) - 24,
