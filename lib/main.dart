@@ -3,6 +3,7 @@ import '''package:flutter/gestures.dart''';
 import '''package:flutter/material.dart''';
 import '''package:google_fonts/google_fonts.dart''';
 import '''./registration_screen.dart''';
+import '''./terms_screen.dart''';
 
 void main() {
   runApp(const MyApp());
@@ -112,7 +113,10 @@ class WelcomeScreen extends StatelessWidget {
                           ),
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
-                              // Handle tap
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const TermsAndConditionsScreen()),
+                        );
                             },
                         ),
                       ],
