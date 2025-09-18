@@ -2,7 +2,7 @@
 import '''package:flutter/material.dart''';
 import '''package:google_fonts/google_fonts.dart''';
 import '''./login_screen.dart''';
-import '''./home_screen.dart''';
+import '''./registration_step2_screen.dart''';
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({super.key});
@@ -92,12 +92,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               ),
               const SizedBox(height: 30),
               ElevatedButton(
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => const HomeScreen()),
-                  );
-                },
+                onPressed: _agreeToTerms
+                    ? () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const RegistrationStep2Screen()),
+                        );
+                      }
+                    : null,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF0D8ECE),
                   minimumSize: const Size(double.infinity, 55),

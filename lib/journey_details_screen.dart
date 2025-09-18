@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:image_picker/image_picker.dart';
 
 class JourneyDetailsScreen extends StatefulWidget {
   const JourneyDetailsScreen({super.key});
@@ -16,9 +15,7 @@ class JourneyDetailsScreen extends StatefulWidget {
 class _JourneyDetailsScreenState extends State<JourneyDetailsScreen> {
   final Map<String, TextEditingController> _controllers = {};
   String? _selectedTravelMedium;
-  String? _selectedNationality;
-  String? _identityProofFileName;
-  String? _touristPhotoFileName;
+  String? _identityProofFileName; // kept only for itinerary docs if needed (not used now)
   List<Widget> _itineraryFields = [];
   int _itineraryCounter = 2;
 
@@ -57,7 +54,6 @@ class _JourneyDetailsScreenState extends State<JourneyDetailsScreen> {
     [
       'Departure Date',
       'Arrival Date',
-      'Date of Birth',
       'Planned Date 1',
       'Planned Date 2'
     ].forEach((field) {
@@ -141,28 +137,7 @@ class _JourneyDetailsScreenState extends State<JourneyDetailsScreen> {
     }
   }
 
-  Future<void> _pickImage(String fieldName) async {
-    final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
-
-    if (image != null) {
-      File file = File(image.path);
-      int sizeInBytes = await file.length();
-      double sizeInMb = sizeInBytes / (1024 * 1024);
-
-      if (sizeInMb > 5) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Image size cannot exceed 5MB')),
-        );
-      } else {
-        setState(() {
-          if (fieldName == 'Tourist Photo') {
-            _touristPhotoFileName = image.name;
-          }
-        });
-      }
-    }
-  }
+  // Tourist photo upload removed; will be handled post-registration via backend
 
   @override
   Widget build(BuildContext context) {
@@ -209,29 +184,7 @@ class _JourneyDetailsScreenState extends State<JourneyDetailsScreen> {
               });
             }),
             const SizedBox(height: 20),
-            _buildSectionTitle('Identity Proof Attachment'),
-            _buildUploadField('Upload Document', 'Identity Proof', _identityProofFileName, () => _pickFile('Identity Proof')),
-            const SizedBox(height: 20),
-            _buildSectionTitle('Passport/Aadhar Number'),
-            _buildTextField('Enter Number'),
-            const SizedBox(height: 20),
-            _buildSectionTitle('Nationality'),
-            _buildDropdownField('Select Nationality', _selectedNationality, _nationalities, (newValue) {
-              setState(() {
-                _selectedNationality = newValue;
-              });
-            }),
-            const SizedBox(height: 20),
-            _buildSectionTitle('KYC Information'),
-            _buildTextField('Enter KYC Details'),
-            const SizedBox(height: 20),
-            _buildSectionTitle('Date of Birth'),
-            _buildDateField('Date of Birth'),
-            const SizedBox(height: 20),
-            _buildSectionTitle('Visa Information (if applicable)'),
-            _buildTextField('Enter Visa Details'),
-            const SizedBox(height: 20),
-            _buildUploadField('Upload Tourist Photo', 'Tourist Photo', _touristPhotoFileName, () => _pickImage('Tourist Photo')),
+            // Personal KYC fields removed; will be retrieved from backend later
             const SizedBox(height: 30),
             _buildSectionHeader('Family Members'),
             _buildSectionTitle('Family Members\' Names'),
