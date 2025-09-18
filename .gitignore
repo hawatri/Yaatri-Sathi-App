@@ -1,21 +1,56 @@
-# Flutter
+# ---- Dart / Flutter ----
+.dart_tool/
+.packages
+.pub/
+.pub-cache/
+.buildlog/
+build/
+flutter_*.png
 .flutter-plugins
 .flutter-plugins-dependencies
-.packages
-.dart_tool/
-build/
+.flutter-plugins-minimal
+.metadata
+.melos_tool/
 
-# IDE files
+# Keep pubspec.lock tracked for apps (good for reproducible builds)
+
+# ---- Firebase local / emulators ----
+.firebase/
+firebase-debug.log
+
+# ---- Android / Gradle ----
+**/.gradle/
+**/captures/
+**/.cxx/
+**/out/
+android/local.properties
+android/**/build/
+**/generated/
+**/intermediates/
+**/tmp/
+**/GeneratedPluginRegistrant.*
+
+# ---- IDEs ----
+# Android Studio / IntelliJ
 .idea/
-.vscode/
 *.iml
+*.ipr
+*.iws
 
-# Log files
+# VS Code
+.vscode/
+
+# ---- OS files ----
+.DS_Store
+Thumbs.db
+
+# ---- Web (Flutter web build artifacts) ----
+web/.dart_tool/
+web/build/
+
+# ---- Logs ----
 *.log
 
-# Other
-.DS_Store
-
-# Project specific
+# ---- Project specific ----
 blueprint.md
 .idx/

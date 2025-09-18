@@ -1,0 +1,37 @@
+# Normalize text files and let Git handle platform-specific checkouts
+* text=auto
+
+# Treat images and binaries as binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.jar binary
+*.keystore binary
+*.jks binary
+
+# Dart/Flutter specific
+*.arb text
+*.dart text diff=dart
+*.yaml text
+*.yml text
+*.json text
+*.md text
+*.gradle text
+*.kts text
+*.kt text
+*.swift text
+*.m text
+*.mm text
+*.xml text
+*.html text
+*.css text
+*.js text
+
+# Lockfiles
+pubspec.lock -diff
+
+# GitHub linguist adjustments (optional)
+*.dart linguist-language=Dart
