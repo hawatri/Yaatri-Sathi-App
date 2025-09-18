@@ -1,7 +1,10 @@
 
+import 'dart:io';
 import '''package:flutter/material.dart''';
 import '''package:google_fonts/google_fonts.dart''';
 import '''package:intl/intl.dart''';
+import '''package:file_picker/file_picker.dart''';
+import '''package:image_picker/image_picker.dart''';
 
 class JourneyDetailsScreen extends StatefulWidget {
   const JourneyDetailsScreen({super.key});
@@ -12,11 +15,15 @@ class JourneyDetailsScreen extends StatefulWidget {
 
 class _JourneyDetailsScreenState extends State<JourneyDetailsScreen> {
   final Map<String, TextEditingController> _controllers = {};
+  String? _selectedTravelMedium;
+  String? _identityProofFileName;
+  String? _touristPhotoFileName;
+
+  final List<String> _travelMediums = ['By Air', 'By Train', 'By Road', 'Other'];
 
   @override
   void initState() {
     super.initState();
-    // Initialize controllers for each date field
     [
       'Departure Date',
       'Arrival Date',
@@ -41,6 +48,52 @@ class _JourneyDetailsScreenState extends State<JourneyDetailsScreen> {
       });
     }
   }
+
+  Future<void> _pickFile(String fieldName) async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+    if (result != null) {
+      File file = File(result.files.single.path!);
+      int sizeInBytes = await file.length();
+      double sizeInMb = sizeInBytes / (1024 * 1024);
+
+      if (sizeInMb > 5) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('File size cannot exceed 5MB')),
+        );
+      } else {
+        setState(() {
+          if (fieldName == 'Identity Proof') {
+            _identityProofFileName = result.files.single.name;
+          } 
+        });
+      }
+    }
+  }
+
+    Future<void> _pickImage(String fieldName) async {
+    final ImagePicker picker = ImagePicker();
+    final XFile? image = await picker.pickImage(source: ImageSource.gallery);
+
+    if (image != null) {
+      File file = File(image.path);
+      int sizeInBytes = await file.length();
+      double sizeInMb = sizeInBytes / (1024 * 1024);
+
+      if (sizeInMb > 5) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Image size cannot exceed 5MB')),
+        );
+      } else {
+        setState(() {
+          if (fieldName == 'Tourist Photo') {
+            _touristPhotoFileName = image.name;
+          }
+        });
+      }
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -81,16 +134,20 @@ class _JourneyDetailsScreenState extends State<JourneyDetailsScreen> {
             _buildTextField('Enter Contact Number'),
             const SizedBox(height: 20),
             _buildSectionTitle('Travel Medium'),
-            _buildDropdownField('Select Travel Medium'),
+            _buildDropdownField('Select Travel Medium', _travelMediums, (newValue) {
+              setState(() {
+                _selectedTravelMedium = newValue;
+              });
+            }),
             const SizedBox(height: 20),
             _buildSectionTitle('Identity Proof Attachment'),
-            _buildUploadField('Upload Document'),
+            _buildUploadField('Upload Document', 'Identity Proof', _identityProofFileName, () => _pickFile('Identity Proof')),
             const SizedBox(height: 20),
             _buildSectionTitle('Passport/Aadhar Number'),
             _buildTextField('Enter Number'),
             const SizedBox(height: 20),
             _buildSectionTitle('Nationality'),
-            _buildDropdownField('Select Nationality'),
+            _buildDropdownField('Select Nationality', [], (value) {}), // Placeholder
             const SizedBox(height: 20),
             _buildSectionTitle('KYC Information'),
             _buildTextField('Enter KYC Details'),
@@ -101,7 +158,7 @@ class _JourneyDetailsScreenState extends State<JourneyDetailsScreen> {
             _buildSectionTitle('Visa Information (if applicable)'),
             _buildTextField('Enter Visa Details'),
             const SizedBox(height: 20),
-            _buildUploadField('Upload Tourist Photo'),
+            _buildUploadField('Upload Tourist Photo', 'Tourist Photo', _touristPhotoFileName, () => _pickImage('Tourist Photo')),
             const SizedBox(height: 30),
             _buildSectionHeader('Family Members'),
             _buildSectionTitle('Family Members\' Names'),
@@ -221,7 +278,7 @@ class _JourneyDetailsScreenState extends State<JourneyDetailsScreen> {
     );
   }
 
-  Widget _buildDropdownField(String hint) {
+  Widget _buildDropdownField(String hint, List<String> items, ValueChanged<String?> onChanged) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
       decoration: BoxDecoration(
@@ -230,24 +287,28 @@ class _JourneyDetailsScreenState extends State<JourneyDetailsScreen> {
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
+          value: _selectedTravelMedium,
           isExpanded: true,
           hint: Text(
             hint,
             style: GoogleFonts.montserrat(color: Colors.grey.shade600, fontSize: 15),
           ),
-          items: [],
-          onChanged: (value) {},
+          items: items.map((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+          onChanged: onChanged,
           icon: const Icon(Icons.arrow_drop_down, color: Colors.grey),
         ),
       ),
     );
   }
 
-    Widget _buildUploadField(String hint) {
+    Widget _buildUploadField(String hint, String fieldName, String? fileName, VoidCallback onTap) {
     return InkWell(
-      onTap: () {
-        // TODO: Show file picker
-      },
+      onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
         decoration: BoxDecoration(
@@ -259,8 +320,9 @@ class _JourneyDetailsScreenState extends State<JourneyDetailsScreen> {
             const Icon(Icons.upload_file, color: Colors.grey, size: 20),
             const SizedBox(width: 10),
             Text(
-              hint,
-              style: GoogleFonts.montserrat(color: Colors.grey.shade600, fontSize: 15),
+              fileName ?? hint,
+              style: GoogleFonts.montserrat(color: fileName != null ? Colors.black : Colors.grey.shade600, fontSize: 15),
+              overflow: TextOverflow.ellipsis,
             ),
           ],
         ),
