@@ -1,6 +1,7 @@
 
 import '''package:flutter/material.dart''';
 import '''package:google_fonts/google_fonts.dart''';
+import '''./journey_details_screen.dart''';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -58,7 +59,12 @@ class _HomeScreenState extends State<HomeScreen> {
             _buildDashboardCard('Active Incidents', '2', '+10%', Colors.green, isFullWidth: true),
             const SizedBox(height: 40),
             ElevatedButton.icon(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const JourneyDetailsScreen()),
+                );
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF0D8ECE),
                 minimumSize: const Size(double.infinity, 60),
