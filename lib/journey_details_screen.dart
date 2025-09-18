@@ -1,9 +1,46 @@
 
 import '''package:flutter/material.dart''';
 import '''package:google_fonts/google_fonts.dart''';
+import '''package:intl/intl.dart''';
 
-class JourneyDetailsScreen extends StatelessWidget {
+class JourneyDetailsScreen extends StatefulWidget {
   const JourneyDetailsScreen({super.key});
+
+  @override
+  State<JourneyDetailsScreen> createState() => _JourneyDetailsScreenState();
+}
+
+class _JourneyDetailsScreenState extends State<JourneyDetailsScreen> {
+  final Map<String, TextEditingController> _controllers = {};
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize controllers for each date field
+    [
+      'Departure Date',
+      'Arrival Date',
+      'Date of Birth',
+      'Planned Date 1',
+      'Planned Date 2'
+    ].forEach((field) {
+      _controllers[field] = TextEditingController();
+    });
+  }
+
+  Future<void> _selectDate(BuildContext context, String field) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null) {
+      setState(() {
+        _controllers[field]!.text = DateFormat.yMMMd().format(picked);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,10 +69,10 @@ class JourneyDetailsScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildSectionTitle('Departure Date'),
-            _buildDateField('Select Date'),
+            _buildDateField('Departure Date'),
             const SizedBox(height: 20),
             _buildSectionTitle('Arrival Date'),
-            _buildDateField('Select Date'),
+            _buildDateField('Arrival Date'),
             const SizedBox(height: 20),
             _buildSectionTitle('Hotel Name'),
             _buildTextField('Enter Hotel Name'),
@@ -59,7 +96,7 @@ class JourneyDetailsScreen extends StatelessWidget {
             _buildTextField('Enter KYC Details'),
             const SizedBox(height: 20),
             _buildSectionTitle('Date of Birth'),
-            _buildDateField('Select Date'),
+            _buildDateField('Date of Birth'),
             const SizedBox(height: 20),
             _buildSectionTitle('Visa Information (if applicable)'),
             _buildTextField('Enter Visa Details'),
@@ -79,13 +116,13 @@ class JourneyDetailsScreen extends StatelessWidget {
             const SizedBox(height: 30),
             _buildSectionHeader('Travel Itinerary'),
             _buildSectionTitle('Planned Date 1'),
-            _buildDateField('Select Date'),
+            _buildDateField('Planned Date 1'),
             const SizedBox(height: 20),
             _buildSectionTitle('Location 1'),
             _buildTextField('Enter Location'),
             const SizedBox(height: 20),
             _buildSectionTitle('Planned Date 2'),
-            _buildDateField('Select Date'),
+            _buildDateField('Planned Date 2'),
             const SizedBox(height: 20),
             _buildSectionTitle('Location 2'),
             _buildTextField('Enter Location'),
@@ -161,26 +198,24 @@ class JourneyDetailsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildDateField(String hint) {
+  Widget _buildDateField(String field) {
     return InkWell(
-      onTap: () {
-        // TODO: Show date picker
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-        decoration: BoxDecoration(
-          color: Colors.grey.shade100,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              hint,
-              style: GoogleFonts.montserrat(color: Colors.grey.shade600, fontSize: 15),
+      onTap: () => _selectDate(context, field),
+      child: AbsorbPointer(
+        child: TextFormField(
+          controller: _controllers[field],
+          decoration: InputDecoration(
+            hintText: 'Select Date',
+            hintStyle: GoogleFonts.montserrat(color: Colors.grey.shade600, fontSize: 15),
+            filled: true,
+            fillColor: Colors.grey.shade100,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide.none,
             ),
-            const Icon(Icons.calendar_today_outlined, color: Colors.grey, size: 20),
-          ],
+            contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+            suffixIcon: const Icon(Icons.calendar_today_outlined, color: Colors.grey, size: 20),
+          ),
         ),
       ),
     );
@@ -231,5 +266,11 @@ class JourneyDetailsScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _controllers.values.forEach((controller) => controller.dispose());
+    super.dispose();
   }
 }
