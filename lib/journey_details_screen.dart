@@ -221,6 +221,7 @@ class _JourneyDetailsScreenState extends State<JourneyDetailsScreen> {
             ElevatedButton(
               onPressed: () {
                 // TODO: Implement submit logic
+                Navigator.pop(context);
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF0D8ECE),
