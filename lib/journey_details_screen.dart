@@ -19,6 +19,8 @@ class _JourneyDetailsScreenState extends State<JourneyDetailsScreen> {
   String? _selectedNationality;
   String? _identityProofFileName;
   String? _touristPhotoFileName;
+  List<Widget> _itineraryFields = [];
+  int _itineraryCounter = 2;
 
   final List<String> _travelMediums = ['By Air', 'By Train', 'By Road', 'Other'];
   final List<String> _nationalities = [
@@ -60,6 +62,43 @@ class _JourneyDetailsScreenState extends State<JourneyDetailsScreen> {
       'Planned Date 2'
     ].forEach((field) {
       _controllers[field] = TextEditingController();
+    });
+  }
+
+  void _addItineraryField() {
+    setState(() {
+      _itineraryCounter++;
+      final dateFieldKey = 'Planned Date $_itineraryCounter';
+      _controllers[dateFieldKey] = TextEditingController();
+
+      _itineraryFields.add(
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                _buildSectionTitle(dateFieldKey),
+                IconButton(
+                  icon: const Icon(Icons.remove_circle_outline, color: Colors.red),
+                  onPressed: () => _removeItineraryField(_itineraryFields.length - 1),
+                ),
+              ],
+            ),
+            _buildDateField(dateFieldKey),
+            const SizedBox(height: 20),
+            _buildSectionTitle('Location $_itineraryCounter'),
+            _buildTextField('Enter Location'),
+            const SizedBox(height: 20),
+          ],
+        ),
+      );
+    });
+  }
+
+  void _removeItineraryField(int index) {
+    setState(() {
+      _itineraryFields.removeAt(index);
     });
   }
 
@@ -217,6 +256,16 @@ class _JourneyDetailsScreenState extends State<JourneyDetailsScreen> {
             const SizedBox(height: 20),
             _buildSectionTitle('Location 2'),
             _buildTextField('Enter Location'),
+            ..._itineraryFields,
+            const SizedBox(height: 20),
+            TextButton.icon(
+              onPressed: _addItineraryField,
+              icon: const Icon(Icons.add_circle_outline, color: Color(0xFF0D8ECE)),
+              label: Text(
+                'Add More',
+                style: GoogleFonts.montserrat(color: const Color(0xFF0D8ECE), fontWeight: FontWeight.w600),
+              ),
+            ),
             const SizedBox(height: 40),
             ElevatedButton(
               onPressed: () {
