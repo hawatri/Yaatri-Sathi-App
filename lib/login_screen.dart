@@ -2,6 +2,7 @@
 import '''package:flutter/material.dart''';
 import '''package:google_fonts/google_fonts.dart''';
 import '''./registration_screen.dart''';
+import '''./home_screen.dart''';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -63,7 +64,10 @@ class LoginScreen extends StatelessWidget {
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  // TODO: Implement login logic
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const HomeScreen()),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF0D8ECE),
