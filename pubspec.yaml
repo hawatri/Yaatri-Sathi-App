@@ -38,8 +38,8 @@ dependencies:
   intl: ^0.20.2
   file_picker: ^10.3.3
   image_picker: ^1.2.0
-  google_maps_flutter:
-  geolocator:
+  google_maps_flutter: ^2.9.0
+  geolocator: ^13.0.1
 
 dev_dependencies:
   flutter_test:
