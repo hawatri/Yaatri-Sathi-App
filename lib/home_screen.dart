@@ -1,8 +1,9 @@
 
-import '''package:flutter/material.dart''';
-import '''package:google_fonts/google_fonts.dart''';
-import '''./journey_details_screen.dart''';
-import '''./map_screen.dart''';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import './journey_details_screen.dart';
+import './map_screen.dart';
+import './report_incident_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -25,12 +26,12 @@ class _HomeScreenState extends State<HomeScreen> {
     final pages = <Widget>[
       _buildHomeContent(context),
       const MapScreen(),
-      const Center(child: Text('Alerts coming soon')),
+      const ReportIncidentScreen(),
       const Center(child: Text('Profile coming soon')),
     ];
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
+      appBar: _selectedIndex == 2 ? null : AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
         automaticallyImplyLeading: false,
